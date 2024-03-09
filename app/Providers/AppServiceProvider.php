@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Http;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Http::macro('qls', function () {
+            return Http::withHeaders([
+                'Accept: application/json',
+	            'Content-Type: application/json',
+                
+            ])->withOptions([
+                'curl' => [
+                    CURLOPT_USERPWD => env('QLS_API_USESRNAME') . ':' . env('QLS_API_PASSWORD')
+                ]
+            ])
+            ->baseUrl(env('QLS_API_URL'));
+        });
     }
 }
