@@ -3,25 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\MakeShipmentDocumentRequest;
+use App\Http\Requests\MakeLabelRequest;
 use Spatie\PdfToImage\Pdf;
 use App\Services\QlsApiService;
 use App\Services\OrderService;
-use App\Services\ReceiptService;
+use App\Services\LabelService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
-class ShipmentController extends Controller
+class LabelController extends Controller
 {
     private QlsApiService $qlsApiService;
     private OrderService $orderService;
-    private ReceiptService $receiptService;
+    private LabelService $labelService;
 
-    function __construct(QlsApiService $qlsApiService, OrderService $orderService, ReceiptService $receiptService) 
+    function __construct(QlsApiService $qlsApiService, OrderService $orderService, LabelService $labelService) 
     {
         $this->qlsApiService = $qlsApiService;
         $this->orderService = $orderService;
-        $this->receiptService = $receiptService;
+        $this->labelService = $labelService;
     }
 
     function create($companyId)
@@ -36,7 +36,7 @@ class ShipmentController extends Controller
             ]);
     }
 
-    function make(MakeShipmentDocumentRequest $request) 
+    function make(MakeLabelRequest $request) 
     {
         $order = $this->orderService->getOrder($request->order_number);
 
@@ -56,7 +56,7 @@ class ShipmentController extends Controller
         // $imagick->setImageFormat("jpg");
         // $imageBlob = $imagick->getImageBlob();
         
-        $newPdf = $this->receiptService->createReceipt($order, asset('images/test.jpg')); // supposed to use the imagick imageblob
+        $newPdf = $this->labelService->createLabel($order, asset('images/test.jpg')); // supposed to use the imagick imageblob
 
         $fileName = $order['number'] . '.pdf';
         Storage::put('receipts/' . $fileName, $newPdf);

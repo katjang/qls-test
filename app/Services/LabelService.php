@@ -5,9 +5,9 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Dompdf\Dompdf;
 
-Class ReceiptService
+Class LabelService
 {
-    public function createReceipt($order, $imageUrl) 
+    public function createLabel($order, $imageUrl) 
     {
         $imagedata = file_get_contents($imageUrl);
         $base64 = base64_encode($imagedata);
