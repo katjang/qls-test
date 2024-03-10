@@ -53,12 +53,14 @@ class ShipmentController extends Controller
 
         // $imagick = new \Imagick();
         // $imagick->readImageBlob($pdf);
-        // $imagick->setImageFormat("jpeg");
+        // $imagick->setImageFormat("jpg");
         // $imageBlob = $imagick->getImageBlob();
         
+        $newPdf = $this->receiptService->createReceipt($order, asset('images/test.jpg')); // supposed to use the imagick imageblob
 
-        $newPdf = $this->receiptService->createReceipt($order, asset('images/test.jpg'));
+        $fileName = $order['number'] . '.pdf';
+        Storage::put('receipts/' . $fileName, $newPdf);
 
-        Storage::put('public/receipts/' . $order['number'] . '.pdf', $newPdf);
+        return Storage::download('receipts/' . $fileName);
     }
 }
