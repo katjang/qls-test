@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Inline CSS Invoice Template</title>
   </head>
-  <body>
+  <body style="background-image: url('data:image/jpeg;base64,{{$label}}'); background-size: cover">
     <div style="padding: 10px;">
       <table style="width: 100%;">
         <tr style="width: 100%;">
@@ -15,29 +15,29 @@
             <label style="font-size: 40px; font-weight: bold;">INV-001</label>
           </td>
           <td style="width: 50%; text-align: right;">
-            <img style='display:block; width:100px;height:100px;' id='base64image'
-               src='data:image/jpeg;base64, {{$label}}' />
           </td>
         </tr>
       </table>
       <table style="width: 100%; margin: 10px 0px;">
         <tr style="width: 100%;">
           <td style="width: 33%; line-height: 25px;">
-            <label>From</label><br />
+            <label>Billing Address</label><br />
             <label style="font-weight: bold; font-size: 20px;"
-              >Business Name</label
+              >{{$order['billing_address']['name']}}</label
             >
             <br />
-            Address Line 1 <br />
-            Address Line 2 <br />
+            {{$order['billing_address']['street'] . ' ' . $order['billing_address']['housenumber']}} <br />
+            {{$order['billing_address']['zipcode'] . ', ' . $order['billing_address']['city']}}<br />
+            {{$order['billing_address']['country']}}<br />
           </td>
           <td style="width: 33%; line-height: 25px;">
-            <label>To</label><br />
+            <label>Shipping Address</label><br />
             <label style="font-weight: bold; font-size: 20px;"
-              >Business Name</label
+              >{{$order['delivery_address']['name']}}</label
             ><br />
-            Address Line 1 <br />
-            Address Line 2 <br />
+            {{$order['delivery_address']['street'] . ' ' . $order['delivery_address']['housenumber']}} <br />
+            {{$order['delivery_address']['zipcode'] . ', ' . $order['delivery_address']['city']}}<br />
+            {{$order['delivery_address']['country']}}<br />
           </td>
           <td style="width: 33%; margin: auto;">
             <span
@@ -63,42 +63,33 @@
             Amount
           </th>
           <th>
-            Hours/Unit
-          </th>
-          <th>
-            Vat Rate
+            SKU
           </th>
           <th>
             Total
           </th>
         </tr>
+        @foreach($order['order_lines'] as $line)
         <tr>
           <td>
-            Product 1
+            {{$line['name']}} ({{$line['ean']}})
           </td>
           <td>
-            100
+            {{$line['amount_ordered']}}
           </td>
           <td>
-            1
+            {{$line['sku']}}
           </td>
           <td>
-            0.00
-          </td>
-          <td>
-            100
+            -
           </td>
         </tr>
+        @endforeach
       </table>
       <table style="width: 100%; position: fixed; bottom: 0;">
         <tr style="width: 100%;">
           <td style="width: 50%;">
-            <div>
-              Notes:
-            </div>
-            <div>
-              More Information
-            </div>
+            
           </td>
           <td
             style="
@@ -108,15 +99,7 @@
               padding: 10px;
             "
           >
-            <label
-              style="
-                font-size: 30px;
-                color: #e1e1e1;
-                text-transform: uppercase;
-                margin: auto;
-              "
-              >Signature</label
-            >
+          
           </td>
         </tr>
       </table>
