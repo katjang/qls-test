@@ -14,7 +14,7 @@ Class LabelService
 
         // instantiate and use the dompdf class
         $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('receipt', ['order' => $order, 'label' => $base64]));
+        $dompdf->loadHtml(view('label', ['order' => $order, 'label' => $base64]));
 
         $dompdf->setPaper('A4', 'portrait');
 

@@ -59,8 +59,8 @@ class LabelController extends Controller
         $newPdf = $this->labelService->createLabel($order, asset('images/test.jpg')); // supposed to use the imagick imageblob
 
         $fileName = $order['number'] . '.pdf';
-        Storage::put('receipts/' . $fileName, $newPdf);
+        Storage::put('labels/' . $fileName, $newPdf);
 
-        return Storage::download('receipts/' . $fileName);
+        return Storage::download('labels/' . $fileName);
     }
 }
