@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ShipmentController;
+use App\Http\Controllers\PageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'index']);
 
-});
+Route::get('companies/{companyId}/labels/create', [ShipmentController::class, 'create'])->name('label.create');
+Route::post('/companies/{companyId}/labels', [ShipmentController::class, 'make'])->name('label.make');
