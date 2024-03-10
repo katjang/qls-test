@@ -4,21 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\MakeShipmentDocumentRequest;
-use Illuminate\Support\Facades\Http;
 use Spatie\PdfToImage\Pdf;
 use App\Services\QlsApiService;
 use App\Services\OrderService;
-use Dompdf\Dompdf;
+use App\Services\ReceiptService;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 class ShipmentController extends Controller
 {
     private QlsApiService $qlsApiService;
     private OrderService $orderService;
+    private ReceiptService $receiptService;
 
-    function __construct(QlsApiService $qlsApiService, OrderService $orderService) 
+    function __construct(QlsApiService $qlsApiService, OrderService $orderService, ReceiptService $receiptService) 
     {
         $this->qlsApiService = $qlsApiService;
         $this->orderService = $orderService;
+        $this->receiptService = $receiptService;
     }
 
     function create($companyId)
@@ -36,24 +39,6 @@ class ShipmentController extends Controller
     function make(MakeShipmentDocumentRequest $request) 
     {
         $order = $this->orderService->getOrder($request->order_number);
-        
-        $imagedata = file_get_contents(asset('images/test.jpg'));
-        $base64 = base64_encode($imagedata);
-
-        // instantiate and use the dompdf class
-        $dompdf = new Dompdf();
-        $dompdf->loadHtml(view('receipt', ['order' => $order, 'label' => $base64]));
-
-        // (Optional) Setup the paper size and orientation
-        $dompdf->setPaper('A4', 'portrait');
-
-        // Render the HTML as PDF
-        $dompdf->render();
-
-        // Render the HTML as PDF
-        $dompdf->stream();
-
-        return;
 
         $response = $this->qlsApiService->getShipmentLabel(
             $request->companyId, 
@@ -64,8 +49,16 @@ class ShipmentController extends Controller
             $order
         );
 
-        return $response;
+        // $pdfLabel = file_get_contents($response["data"]["labels"]["a4"]["offset_2"]);
 
-        $label = HTTP::get($response["data"]["a4"]["offset_2"]);
+        // $imagick = new \Imagick();
+        // $imagick->readImageBlob($pdf);
+        // $imagick->setImageFormat("jpeg");
+        // $imageBlob = $imagick->getImageBlob();
+        
+
+        $newPdf = $this->receiptService->createReceipt($order, asset('images/test.jpg'));
+
+        Storage::put('public/receipts/' . $order['number'] . '.pdf', $newPdf);
     }
 }
