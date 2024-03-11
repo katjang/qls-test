@@ -6,21 +6,19 @@ use Illuminate\Http\Request;
 use App\Http\Requests\MakeLabelRequest;
 use Spatie\PdfToImage\Pdf;
 use App\Services\QlsApiService;
-use App\Services\FooBarOrderService;
 use App\Services\LabelService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use App\Factories\OrderServiceFactory;
 
 class LabelController extends Controller
 {
     private QlsApiService $qlsApiService;
-    private FooBarOrderService $orderService;
     private LabelService $labelService;
 
-    function __construct(QlsApiService $qlsApiService, FooBarOrderService $orderService, LabelService $labelService) 
+    function __construct(QlsApiService $qlsApiService, LabelService $labelService) 
     {
         $this->qlsApiService = $qlsApiService;
-        $this->orderService = $orderService;
         $this->labelService = $labelService;
     }
 
@@ -38,8 +36,8 @@ class LabelController extends Controller
 
     function make(MakeLabelRequest $request) 
     {
-        $order = $this->orderService->getOrder($request->order_number);
-        // instead of using injected orderService, create the correct orderService with a factory pattern.
+        $orderService = OrderServiceFactory::getService($request->order_number);
+        $order = $orderService->getOrder($request->order_number);
 
         $response = $this->qlsApiService->getShipmentLabel(
             $request->companyId, 

@@ -8,6 +8,7 @@ class FooBarOrderService implements OrderServiceInterface
 {
     public function getOrder($orderNumber) 
     {
+        // mocking of unknown API.
         return [
             'number' => '#958201',
             'billing_address' => [
