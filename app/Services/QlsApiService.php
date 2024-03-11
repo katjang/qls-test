@@ -6,6 +6,11 @@ use Illuminate\Support\Facades\Http;
 
 Class QlsApiService 
 {
+    function getCompanies()
+    {
+        return Http::qls()->get('company');
+    }
+
     function getProducts($companyId) 
     {
         return Http::qls()->get('company/' . $companyId . '/product');

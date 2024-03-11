@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\MakeLabelRequest;
 use Spatie\PdfToImage\Pdf;
 use App\Services\QlsApiService;
-use App\Services\OrderService;
+use App\Services\FooBarOrderService;
 use App\Services\LabelService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Storage;
 class LabelController extends Controller
 {
     private QlsApiService $qlsApiService;
-    private OrderService $orderService;
+    private FooBarOrderService $orderService;
     private LabelService $labelService;
 
-    function __construct(QlsApiService $qlsApiService, OrderService $orderService, LabelService $labelService) 
+    function __construct(QlsApiService $qlsApiService, FooBarOrderService $orderService, LabelService $labelService) 
     {
         $this->qlsApiService = $qlsApiService;
         $this->orderService = $orderService;
@@ -39,6 +39,7 @@ class LabelController extends Controller
     function make(MakeLabelRequest $request) 
     {
         $order = $this->orderService->getOrder($request->order_number);
+        // instead of using injected orderService, create the correct orderService with a factory pattern.
 
         $response = $this->qlsApiService->getShipmentLabel(
             $request->companyId, 
@@ -52,7 +53,7 @@ class LabelController extends Controller
         // $pdfLabel = file_get_contents($response["data"]["labels"]["a4"]["offset_2"]);
 
         // $imagick = new \Imagick();
-        // $imagick->readImageBlob($pdf);
+        // $imagick->readImageBlob($pdfLabel);
         // $imagick->setImageFormat("jpg");
         // $imageBlob = $imagick->getImageBlob();
         

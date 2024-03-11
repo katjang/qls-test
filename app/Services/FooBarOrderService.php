@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 
-class OrderService implements OrderServiceInterface
+class FooBarOrderService implements OrderServiceInterface
 {
     public function getOrder($orderNumber) 
     {
