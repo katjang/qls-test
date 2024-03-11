@@ -36,7 +36,7 @@ class LabelController extends Controller
 
     function make(MakeLabelRequest $request) 
     {
-        $orderService = OrderServiceFactory::getService($request->order_number);
+        $orderService = OrderServiceFactory::getService($request->companyId);
         $order = $orderService->getOrder($request->order_number);
 
         $response = $this->qlsApiService->getShipmentLabel(
